@@ -1,0 +1,165 @@
+/* General styling for the history container */
+.history-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+/* Styling for folder buttons */
+.folders-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+  margin-bottom: 20px; /* Extra space before the image grid or next element */
+}
+
+.folders-list button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.folders-list button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the image grid */
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  gap: 20px; /* Space between images */
+  margin-bottom: 20px; /* Space before pagination */
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block; /* Ensure images are block level for correct display */
+}
+
+/* Styling for image information */
+.image-info {
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-name, .timestamp {
+  margin: 0;
+}
+
+/* Styling for pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+}
+
+.back-to-folders-btn {
+  padding: 10px 20px;
+  margin-top: 20px; /* Add some space above the button */
+  background-color: #f44336; /* A distinct color to differentiate from other buttons */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem; /* Adjust font size as needed */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-to-folders-btn:hover {
+  background-color: #d32f2f; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+.back-to-folders-btn:active {
+  transform: translateY(1px); /* Pressed effect */
+}
+
+/* History.css */
+
+/* Calendar container styling */
+.rdrDateRangePickerWrapper {
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  background-color: white;
+}
+
+/* Defined ranges and main calendar separation */
+.rdrDefinedRangesWrapper, .rdrCalendarWrapper {
+  border: none !important;
+}
+
+/* Month and year header */
+.rdrMonthAndYearWrapper {
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Navigation between months */
+.rdrNextPrevButton {
+  background-color: #f0f0f0;
+}
+
+/* Days styling */
+.rdrDay {
+  border-radius: 50%;
+  border: none;
+  color: #666;
+  font-weight: bold;
+}
+
+/* Hover states for days */
+.rdrDay:hover {
+  background-color: #eee;
+  color: #333;
+}
+
+/* Selected and in-range days */
+.rdrDayNumber.selected, .rdrInRange, .rdrStartEdge, .rdrEndEdge {
+  background-color: #0056b3;
+  color: white;
+}
+
+/* Day numbers */
+.rdrDayNumber {
+  font-size: 14px;
+}
+
+/* Adjust the range labels */
+.rdrStaticRangeLabel {
+  color: #333;
+  font-weight: normal;
+}
