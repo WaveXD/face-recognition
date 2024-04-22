@@ -1,52 +1,53 @@
 import React, { useState } from 'react';
-import { getFirestore, collection, addDoc } from 'firebase/firestore'; // นำเข้าฟังก์ชันจัดการข้อมูล Firestore
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // นำเข้าฟังก์ชันจัดการไฟล์บน Firebase Storage
-import app from '../firebase'; // ตรวจสอบเส้นทางการเชื่อมต่อ Firebase
-import Navbar from './Navbar'; // ตรวจสอบเส้นทางการเชื่อมต่อ
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import app from '../firebase';
+import Navbar from './Navbar';
 import '../styles/Setup.css';
 
 function Setup() {
-  const [userName, setUserName] = useState(''); // กำหนด state สำหรับจัดเก็บชื่อผู้ใช้
-  const [file, setFile] = useState(null); // กำหนด state สำหรับจัดเก็บไฟล์
-  const firestore = getFirestore(app); // รับอินสแตนซ์ของ Firestore จากแอป Firebase
-  const storage = getStorage(app); // รับอินสแตนซ์ของ Storage จากแอป Firebase
+  const [userName, setUserName] = useState('');
+  const [file, setFile] = useState(null);
+  const firestore = getFirestore(app);
+  const storage = getStorage(app);
 
-  const handleFileChange = (e) => { // ฟังก์ชันจัดการเมื่อมีการเปลี่ยนแปลงไฟล์
-    setFile(e.target.files[0]); // อัปเดต state ไฟล์เมื่อผู้ใช้เลือกไฟล์
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const addUser = async (userName, file) => { // ฟังก์ชัน asynchronous สำหรับเพิ่มผู้ใช้
+  const addUser = async (userName, file) => {
     try {
-      const storageRef = ref(storage, `Users/${file.name}`); // สร้าง reference ไฟล์ใน Storage
-      const metadata = { // กำหนด metadata สำหรับไฟล์
-        contentType: file.type, // ชนิดของไฟล์
+      const storageRef = ref(storage, `Users/${file.name}`);
+      const metadata = {
+        contentType: file.type,
         customMetadata: {
-          'processed': 'false', // ตั้งค่าเริ่มต้นเป็น 'false' เพื่อรอการประมวลผล
+          'processed': 'false',
         }
       };
-      const snapshot = await uploadBytes(storageRef, file, metadata); // อัปโหลดไฟล์พร้อม metadata
-      const photoURL = await getDownloadURL(snapshot.ref); // รับ URL ของไฟล์ที่อัปโหลด
+      const snapshot = await uploadBytes(storageRef, file, metadata);
+      const photoURL = await getDownloadURL(snapshot.ref);
 
-      const docRef = await addDoc(collection(firestore, "users"), { // เพิ่มข้อมูลผู้ใช้ใน Firestore
+      const docRef = await addDoc(collection(firestore, "users"), {
         name: userName,
         photoURL: photoURL,
-        processed: false
+        processed: false,
+        fileName: file.name
       });
 
-      console.log("User added with ID: ", docRef.id); // บันทึก ID ของผู้ใช้ใหม่ใน console
-      alert('User added successfully! Processing will complete soon.'); // แจ้งผู้ใช้ว่าเพิ่มผู้ใช้สำเร็จ
+      console.log("User added with ID: ", docRef.id);
+      alert('User added successfully! Processing will complete soon.');
     } catch (error) {
-      console.error("Error adding user: ", error); // บันทึกข้อผิดพลาดใน console
-      alert('Failed to add user.'); // แจ้งข้อผิดพลาดให้ผู้ใช้
+      console.error("Error adding user: ", error);
+      alert('Failed to add user.');
     }
   };
 
-  const handleSubmit = async (e) => { // ฟังก์ชันจัดการเมื่อส่งฟอร์ม
-    e.preventDefault(); // ป้องกันการทำงานของฟอร์มแบบปกติ
-    if (file && userName) { // เช็คว่าได้รับชื่อผู้ใช้และไฟล์แล้วหรือไม่
-      await addUser(userName, file); // เรียกฟังก์ชันเพิ่มผู้ใช้
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (file && userName) {
+      addUser(userName, file);
     } else {
-      alert("Missing userName or file"); // แจ้งเตือนหากขาดข้อมูล
+      alert("Missing userName or file");
     }
   };
 

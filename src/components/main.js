@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const Main = () => {
-  const [cameraUrl, setCameraUrl] = useState('https://localhost:5000/video_feed');  // กำหนด state สำหรับจัดเก็บ URL ของการถ่ายทอดสดจากกล้อง
+  const [cameraUrl, setCameraUrl] = useState('http://localhost:5000/video_feed');  // กำหนด state สำหรับจัดเก็บ URL ของการถ่ายทอดสดจากกล้อง
 
   const mainStyle = {
     textAlign: 'center',
@@ -21,9 +21,9 @@ const Main = () => {
   };
 
   const videoStyle = {
-    width: '320px', 
-    height: 'auto', 
-    objectFit: 'contain' 
+    width: '320px',
+    height: 'auto',
+    objectFit: 'contain'
   };
 
   const iconStyle = {
@@ -35,13 +35,13 @@ const Main = () => {
   const handleCameraChange = (cameraNumber) => { // กำหนดฟังก์ชันสำหรับเปลี่ยนกล้อง
     switch (cameraNumber) {
       case 1:
-        setCameraUrl('http://database-8b747.web.app/video_feed'); // กำหนด URL สำหรับกล้องที่ 1
+        setCameraUrl('http://localhost:5000/video_feed'); // กำหนด URL สำหรับกล้องที่ 1
         break;
       case 2:
-        setCameraUrl('http://database-8b747.web.app/video_feed2'); // กำหนด URL สำหรับกล้องที่ 2
+        setCameraUrl('http://localhost:5000/video_feed2'); // กำหนด URL สำหรับกล้องที่ 2
         break;
       default:
-        setCameraUrl('http://database-8b747.web.app/video_feed'); // กำหนด URL ค่าเริ่มต้น
+        setCameraUrl('http://localhost:5000/video_feed'); // กำหนด URL ค่าเริ่มต้น
     }
   };
 
@@ -49,10 +49,9 @@ const Main = () => {
     <main style={mainStyle}>
       <div>
         <div style={liveStreamStyle}>
-          Live Streaming <br/>
-          <img src="http://192.168.1.64:80/Streaming/channels/102/httpPreview" alt="Camera Stream"></img>
+          Live Streaming <br />
           <span style={iconStyle} onClick={() => handleCameraChange(1)} role="img" aria-label="Camera 1">📷 1</span>
-          <span style={iconStyle} onClick={() => handleCameraChange(2)} role="img" aria-label="Camera 2">📷 2</span>        
+          <span style={iconStyle} onClick={() => handleCameraChange(2)} role="img" aria-label="Camera 2">📷 2</span>
         </div>
         <div style={videoContainerStyle}>
           <img

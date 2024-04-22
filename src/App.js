@@ -6,6 +6,9 @@ import Setup from './components/Setup';
 import Login from './components/Login';
 import Register from './components/Register';
 import Logout from './components/Logout';
+import AdminLogin from './admin/admin-login'; // ตรวจสอบว่าไฟล์และเส้นทางการนำเข้านี้ถูกต้อง
+import AdminDashboard from './admin/admin-dashboard';
+import AdminHistory from './admin/admin-history';
 
 function App() {
   // Initial check for existing logged in state in local storage
@@ -26,6 +29,9 @@ function App() {
           <Route path="/setup" element={isLoggedIn ? <Setup /> : <Navigate to="/login" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/logout" element={<Logout setLoggedIn={setLoggedIn} />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-history" element={<AdminHistory />} />
         </Routes>
       </div>
     </Router>

@@ -1,0 +1,114 @@
+/* Base settings */
+.admin-history {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+}
+
+/* Base navbar styling */
+/* Base navbar styling */
+.navbar {
+    background-color: #007bff; /* Blue shade */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar .logo-and-title {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo-and-title img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    filter: invert(1); /* Assuming logo is dark, invert makes it light */
+}
+
+.navbar-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Styling for navigation buttons */
+.navbar .navbar-items {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .nav-button, .navbar .logout-button {
+    background-color: #ffffff;
+    color: #007bff;
+    border: 1px solid transparent;
+    padding: 8px 12px;
+    margin-left: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar .nav-button:hover, .navbar .logout-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    color: #ffffff;
+    border-color: #0056b3;
+}
+
+/* Folder list styling */
+.admin-history .folders-list button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.admin-history .folders-list button:hover {
+    background-color: #0056b3;
+}
+
+/* Image grid styling */
+.admin-history .images-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.admin-history .image-container {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.admin-history .image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.admin-history .image-container p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.admin-history button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #dc3545;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.admin-history button:hover {
+    background-color: #c82333;
+}

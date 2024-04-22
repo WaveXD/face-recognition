@@ -1,0 +1,110 @@
+/* Base settings */
+.admin-dashboard {
+
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+}
+
+/* Base navbar styling */
+.navbar {
+    background-color: #007bff; /* Blue shade */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar .logo-and-title {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo-and-title img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    filter: invert(1); /* Assuming logo is dark, invert makes it light */
+}
+
+.navbar-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Styling for navigation buttons */
+.navbar .navbar-items {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .nav-button, .navbar .logout-button {
+    background-color: #ffffff;
+    color: #007bff;
+    border: 1px solid transparent;
+    padding: 8px 12px;
+    margin-left: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar .nav-button:hover, .navbar .logout-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    color: #ffffff;
+    border-color: #0056b3;
+}
+
+
+/* Content styling below the navbar */
+.admin-dashboard main {
+    margin-top: 20px;
+}
+
+.admin-dashboard .user-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-dashboard .user-item {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.admin-dashboard .user-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.admin-dashboard .user-info {
+    flex-grow: 1;
+}
+
+.admin-dashboard .user-info span {
+    font-size: 18px;
+    color: #333;
+}
+
+.admin-dashboard button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #dc3545;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.admin-dashboard button:hover {
+    background-color: #c82333;
+}
