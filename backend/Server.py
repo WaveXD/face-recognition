@@ -9,9 +9,11 @@ from firebase_admin import credentials, firestore, storage
 import requests
 from PIL import Image
 from io import BytesIO
+import time
+import json
 
 app = Flask(__name__)  # สร้างอินสแตนซ์ของ Flask
-url1 = 'rtsp://admin:wave15042544@192.168.1.64:554/Streaming/Channels/101' # กำหนด URL สำหรับสตรีมวิดีโอจากกล้องวงจรปิด
+url1 = 'rtsp://admin:wave15042544.@192.168.1.64/Streaming/Channels/101' # กำหนด URL สำหรับสตรีมวิดีโอจากกล้องวงจรปิด
 camera1 = cv2.VideoCapture(url1)
 camera2 = cv2.VideoCapture(0)  # กำหนดกล้องเป็น webcam ในเครื่อง
 
@@ -51,22 +53,19 @@ def fetch_user_data():
     global known_face_encodings, known_face_names
     known_face_encodings.clear() # ล้างรายการ encoding
     known_face_names.clear() # ล้างรายการชื่อ
-
     users_ref = db.collection(u'users') # อ้างอิงคอลเล็กชันผู้ใช้
     docs = users_ref.stream()  # ดึงข้อมูลผู้ใช้
-
     for doc in docs:
         user = doc.to_dict() # แปลงเอกสารเป็นดิกชันนารี
-        photo_url = user['photoURL'] # ดึง URL รูปภาพ
-        response = requests.get(photo_url) # ทำ HTTP request ไปยัง URL
-        img = Image.open(BytesIO(response.content)) # เปิดรูปภาพจากข้อมูลไบนารี
-        img_np = np.array(img) # แปลงรูปภาพเป็นอาร์เรย์ numpy
-        face_encodings = face_recognition.face_encodings(img_np) # หา encoding ใบหน้า
-        if face_encodings:
+        if user['name'] in known_face_names: # ถ้าชื่อผู้ใช้มีอยู่แล้วให้ข้ามไป
+            continue
+        else:
+            face_encodings = [np.array(json.loads(encoding)) for encoding in user['face_encodings']] # แปลง encoding จาก string เป็นอาร์เรย์ numpy
+            known_face_names.append(user['name'])
             known_face_encodings.append(face_encodings[0]) # เพิ่ม encoding ลงในรายการ
-            known_face_names.append(user['name']) # เพิ่มชื่อลงในรายการ
+          
 
-fetch_user_data() # เรียกฟังก์ชันเพื่อดึงข้อมูลผู้ใช้
+
 
 face_last_seen = {name: False for name in known_face_names} # สร้างดิกชันนารีเพื่อติดตามใบหน้าที่เห็นล่าสุด
 
@@ -151,14 +150,79 @@ def generate_frames(camera): # ฟังก์ชันสร้างเฟร�
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        time.sleep(0.2)
 
-@app.route('/video_feed2') # กำหนดเส้นทางสำหรับวิดีโอสตรีม
+
+
+
+
+def extract_face_encodings(image_url):
+    """Extract face encodings from an image URL."""
+    response = requests.get(image_url)
+    image = face_recognition.load_image_file(BytesIO(response.content))
+    face_locations = face_recognition.face_locations(image)
+    face_encodings = face_recognition.face_encodings(image, face_locations)
+    return face_encodings
+
+def save_encodings_to_firestore(user_name, encodings):
+    """Save face encodings to Firestore."""
+    db = firestore.client()
+    db.collection('users').document(user_name).set({
+        'face_encodings': [json.dumps(encoding.tolist()) for encoding in encodings],
+        'processed': True
+    }, merge=True)
+   
+
+def check_if_processed(user_name):
+    """Check if the user's image has already been processed."""
+    db = firestore.client()
+    doc_ref = db.collection('users').document(user_name)
+    doc = doc_ref.get()
+    if doc.exists:
+        if doc.to_dict().get('processed'):
+            return True
+    return False
+
+def list_and_process_images():
+    """get images from photoURL and process them."""
+    db = firestore.client()
+    docs = db.collection('users').stream()
+    for doc in docs:
+        user_name = doc.id
+        photoURL = doc.to_dict().get('photoURL')
+        if not check_if_processed(user_name):
+            encodings = extract_face_encodings(photoURL)
+            save_encodings_to_firestore(user_name, encodings)
+            print(f'{user_name} processed.')
+        else:
+            print(f'{user_name} already processed.')
+
+
+
+        
+
+@app.route('/video_feed') # กำหนดเส้นทางสำหรับวิดีโอสตรีม
 def video_feed():
     return Response(generate_frames(camera1), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed') # กำหนดเส้นทางสำหรับวิดีโอสตรีมอีกตัว
+@app.route('/video_feed2') # กำหนดเส้นทางสำหรับวิดีโอสตรีมอีกตัว
 def video_feed2():
     return Response(generate_frames(camera2), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-if __name__ == '__main__': # เริ่มรันแอปพลิเคชัน
+
+@app.route('/update_encode')
+def update_encode():
+    list_and_process_images()
+    fetch_user_data()
+    return Response("complete")
+    
+
+
+
+
+
+
+
+if __name__ == '__main__': 
+    fetch_user_data() # เรียกฟังก์ชันเพื่อดึงข้อมูลผู้ใช้# เริ่มรันแอปพลิเคชัน
     app.run(debug=True)

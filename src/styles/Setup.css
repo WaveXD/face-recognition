@@ -49,3 +49,11 @@
 .setup-submit-btn:hover {
     background-color: #0056b3;
 }
+
+.accept{
+    text-decoration: underline;
+    font-size: small;
+    font-weight: bold;
+    color:red;
+    margin-top: -5px;
+}

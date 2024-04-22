@@ -23,10 +23,11 @@ def extract_face_encodings(image_url):
 def save_encodings_to_firestore(user_name, encodings):
     """Save face encodings to Firestore."""
     db = firestore.client()
-    doc_ref = db.collection('users').document(user_name)
-    encoded_encodings = [json.dumps(encoding.tolist()) for encoding in encodings]
-    doc_ref.set({'face_encodings': encoded_encodings, 'processed': True}, merge=True)
-    print(f"Encodings saved for {user_name}")
+    db.collection('users').document(user_name).set({
+        'face_encodings': [json.dumps(encoding.tolist()) for encoding in encodings],
+        'processed': True
+    }, merge=True)
+   
 
 def check_if_processed(user_name):
     """Check if the user's image has already been processed."""
@@ -39,22 +40,25 @@ def check_if_processed(user_name):
     return False
 
 def list_and_process_images():
-    """List and process images in the Firebase storage bucket."""
-    bucket = storage.bucket()
-    blobs = bucket.list_blobs(prefix='Users/')
-    for blob in blobs:
-        if blob.name.lower().endswith('.jpg'):
-            user_name = blob.name.split('/')[1].split('.')[0]
-            if not check_if_processed(user_name):
-                image_url = blob.generate_signed_url(expiration=datetime.timedelta(minutes=15), method='GET')
-                print(f"Processing image: {blob.name}")
-                encodings = extract_face_encodings(image_url)
-                if encodings:
-                    save_encodings_to_firestore(user_name, encodings)
-                else:
-                    print("No faces detected or failed to process image.")
-            else:
-                print(f"Skipping already processed image for {user_name}.")
+    """get images from photoURL and process them."""
+    db = firestore.client()
+    docs = db.collection('users').stream()
+    for doc in docs:
+        user_name = doc.id
+        photoURL = doc.to_dict().get('photoURL')
+        if not check_if_processed(user_name):
+            encodings = extract_face_encodings(photoURL)
+            save_encodings_to_firestore(user_name, encodings)
+            print(f'{user_name} processed.')
+        else:
+            print(f'{user_name} already processed.')
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     list_and_process_images()

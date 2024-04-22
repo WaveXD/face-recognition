@@ -44,6 +44,7 @@ const Main = () => {
         setCameraUrl('http://localhost:5000/video_feed'); // กำหนด URL ค่าเริ่มต้น
     }
   };
+  
 
   return (
     <main style={mainStyle}>

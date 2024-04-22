@@ -12,7 +12,20 @@ function Setup() {
   const storage = getStorage(app);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    try{
+    let filename = e.target.files[0].name 
+    if(String(filename).includes("png")){
+      alert("accept only JPG")
+      e.value = null
+      setFile(null)
+    }
+    else{
+      setFile(e.target.files[0]);
+    }
+  }
+  catch{
+
+  }
   };
 
   const addUser = async (userName, file) => {
@@ -40,6 +53,16 @@ function Setup() {
       console.error("Error adding user: ", error);
       alert('Failed to add user.');
     }
+    //call function update_encoder to update in backend python
+    
+    try {
+      const response = await fetch('http://localhost:5000/update_encode');
+    }
+    catch (error) {
+     
+    }
+    
+
   };
 
   const handleSubmit = (e) => {
@@ -47,7 +70,13 @@ function Setup() {
     if (file && userName) {
       addUser(userName, file);
     } else {
-      alert("Missing userName or file");
+      if(!file){
+        alert("Missing file");
+      }
+      else{
+        alert("Missing userName");
+      }
+      
     }
   };
 
@@ -65,12 +94,14 @@ function Setup() {
             placeholder="User Name"
             required
           />
+          
           <input
             className="setup-file-input"
             type="file"
             onChange={handleFileChange}
             required
           />
+          <span><h1 className='accept'> accept only .jpg </h1></span>
           <button className="setup-submit-btn" type="submit">Submit</button>
         </form>
       </div>
